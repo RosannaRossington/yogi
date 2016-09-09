@@ -2,10 +2,11 @@ var mongoose   = require("mongoose");
 var bcrypt     = require('bcrypt');
 
 var userSchema = new mongoose.Schema({
-  username: { type: String, required: ture, unique: true },
-  email: { type: String, required: ture, unique: true }
-  passwordHash: { type: String, required: ture }
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  passwordHash: { type: String, required: true }
 });
+
 
 //remove information when set up as JSON
 userSchema.set('toJSON', {
@@ -45,5 +46,9 @@ userSchema.path('passwordHash')
     }
   }
 });
+
+userSchema.methods.validatePassword = function(password) {
+    return bcrypt.compareSync(password, this.passwordHash);
+}
 
 module.exports = mongoose.model("User", userSchema);
